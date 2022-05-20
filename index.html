@@ -8,6 +8,48 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <h1>Jack And Chris</h1>
+        <header>
+            <h1>Welcome to Jack and Chris's Image Filter</h1>
+        </header>
+        
+        <div class="content">
+            <div class="top-content">
+                <div style="width:50px; height:50px; border:1px solid black"></div>
+                <fieldset>
+                    <legend>Select a Filter:</legend>
+
+                    <div>
+                        <input type="radio" id="normal" value="normal" name="filter"
+                        checked>
+                        <label for="normal">Normal</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="blur" value="blur" name="filter">
+                        <label for="blur">Blur</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="pixelated" value="pixelated" name="filter">
+                        <label for="pixelated">Pixelated</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" id="black-white" value="black-white" name="filter">
+                        <label for="black-white">Black and White</label>
+                    </div>
+
+                    <div>
+                        <button id="apply-button">Apply</button>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="submit">
+                <input type="file" id="uploaded-file">
+            </div>     
+                    
+        </div>
+
     </body>
 </html>

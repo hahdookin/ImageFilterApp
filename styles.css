@@ -1,1 +1,24 @@
 /* Stylesheet */
+header{
+    text-align: center;
+}
+
+.content{
+    width: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+}
+
+.top-content{
+    flex: 0 0 100px;
+    left:0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.submit{
+    display: block;
+}
