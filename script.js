@@ -1,4 +1,5 @@
 import PPM from './src/PPM.js';
+import Kernel from './src/Kernel.js';
 
 const fileUploadBtn = document.getElementById('uploaded-file');
 const applyFilterBtn = document.getElementById('apply-button');
@@ -11,7 +12,8 @@ fileUploadBtn.addEventListener('input', async function(e) {
     const ppm = await PPM.fromFile(this.files[0]);
     const pixels = ppm.pixels;
 
-    pixels.invert();
+    // pixels.greyscale();
+    pixels.convolve(Kernel.Sharpen());
 
     pixels.draw(canvas);
 });
