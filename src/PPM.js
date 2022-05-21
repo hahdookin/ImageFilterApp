@@ -1,23 +1,12 @@
 import DataScanner from './DataScanner.js';
+import PixelSpace from './PixelSpace.js';
+import Pixel from './Pixel.js';
 
-/**
- * Wrapper class for RGB pixel
+/*
+ * PPM file format: https://en.wikipedia.org/wiki/Netpbm
+ * Wrapper class for a PPM file. Parses the PPM file
+ * and creates a pixelspace from it.
  */
-class Pixel {
-    constructor(r, g, b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-    }
-    rgb() {
-        return `rgb(${this.r}, ${this.g}, ${this.b})`
-    }
-    toString() {
-        return this.rgb();
-    }
-}
-
-// PPM file format: https://en.wikipedia.org/wiki/Netpbm
 export default class PPM {
     constructor(data) {
         const scanner = new DataScanner(new Uint8Array(data));
@@ -33,11 +22,11 @@ export default class PPM {
 
         // Rest of the bytes are pixel data
         this.imageData = scanner.toEnd();
-        this.pixels = [];
+        this.pixels = new PixelSpace(this.w, this.h);
 
         // Convert tuples of 3 bytes to a single pixel (rbg) value
         for (let i = 0; i < this.imageData.byteLength; i += 3) {
-            this.pixels.push(new Pixel(
+            this.pixels.pushPixel(new Pixel(
                 this.imageData[i + 0],
                 this.imageData[i + 1],
                 this.imageData[i + 2],
@@ -45,28 +34,59 @@ export default class PPM {
         }
     }
 
+    // Construct a PPM object from a File
     static async fromFile(file) {
         const data = await file.arrayBuffer();
         return new PPM(data);
     }
 
-    // Return the pixel at (x, y) or (col, row)
-    at(row, col) {
-        return this.pixels[this.w * row + col];
-    }
-
     // Draws the PPM to a specified canvas
-    draw(canvas) {
-        canvas.width = this.w;
-        canvas.height = this.h;
+    // draw(canvas) {
+    //     canvas.width = this.w;
+    //     canvas.height = this.h;
 
-        const ctx = canvas.getContext('2d');
+    //     const ctx = canvas.getContext('2d');
 
-        for (let row = 0; row < this.h; row++) {
-            for (let col = 0; col < this.w; col++) {
-                ctx.fillStyle = '' + this.at(row, col);
-                ctx.fillRect(col, row, 1, 1);
-            }
-        }
-    }
+    //     this.invert();
+    //     this.greyscale();
+
+    //     for (let row = 0; row < this.h; row++) {
+    //         for (let col = 0; col < this.w; col++) {
+    //             ctx.fillStyle = '' + this.pixels.get(row, col);
+    //             ctx.fillRect(col, row, 1, 1);
+    //         }
+    //     }
+    // }
+
+    // // Apply greyscale filter
+    // greyscale() {
+    //     for (let row = 0; row < this.h; row++) {
+    //         for (let col = 0; col < this.w; col++) {
+    //             const avg = this.pixels.get(row, col).avg();
+    //             this.pixels.set(row, col, avg);
+    //         }
+    //     }
+    // }
+
+    // // Apply monochrome filter
+    // monochrome() {
+    //     for (let row = 0; row < this.h; row++) {
+    //         for (let col = 0; col < this.w; col++) {
+    //             const avg = this.pixels.get(row, col).avg();
+    //             this.pixels.set(row, col, avg.r > 122 ? Pixel.white() : Pixel.black());
+    //         }
+    //     }
+    // }
+
+    // // Apply invert filter
+    // invert() {
+    //     for (let row = 0; row < this.h; row++) {
+    //         for (let col = 0; col < this.w; col++) {
+    //             const original = this.pixels.get(row, col);
+    //             this.pixels.set(row, col, original.invert());
+    //         }
+    //     }
+    // }
+
+
 }
