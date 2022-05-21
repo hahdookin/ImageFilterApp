@@ -26,4 +26,7 @@ export default class Pixel {
     static black() {
         return new Pixel(0, 0, 0);
     }
+    clone() {
+        return new Pixel(this.r, this.g, this.b);
+    }
 }
