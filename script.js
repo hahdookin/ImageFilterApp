@@ -8,16 +8,48 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 document.querySelector('body').appendChild(canvas);
 
+let originalImage;
+let workingImage;
+
 fileUploadBtn.addEventListener('input', async function(e) {
     const ppm = await PPM.fromFile(this.files[0]);
-    const pixels = ppm.pixels;
+    originalImage = ppm.pixels;
+    workingImage = ppm.pixels.clone();
 
-    // pixels.greyscale();
-    pixels.convolve(Kernel.Sharpen());
-
-    pixels.draw(canvas);
+    workingImage.draw(canvas);
 });
 
 applyFilterBtn.addEventListener('click', function(e) {
+    const fieldSet = this.parentElement.parentElement;
+    fieldSet.querySelectorAll('input').forEach((el) => {
+        if (!el.checked) return;
 
+        switch (el.value) {
+            case "normal":
+                workingImage = originalImage.clone();
+                break;
+            case "box-blur":
+                workingImage.convolve(Kernel.BoxBlur());
+                break;
+            case "gaussian-blur":
+                workingImage.convolve(Kernel.GaussianBlur());
+                break;
+            case "pixelated":
+                break;
+            case "greyscale":
+                workingImage.greyscale();
+                break;
+            case "emboss":
+                workingImage.convolve(Kernel.Emboss());
+                break;
+            case "sharpen":
+                workingImage.convolve(Kernel.Sharpen());
+                break;
+            case "ridge":
+                workingImage.convolve(Kernel.Ridge());
+                break;
+        }
+
+        workingImage.draw(canvas);
+    });
 });
