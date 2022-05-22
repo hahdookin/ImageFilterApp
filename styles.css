@@ -1,10 +1,12 @@
 /* Stylesheet */
 header{
     text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
 }
-
+body{
+    background-color:aliceblue;
+}
 .content{
-    width: 500px;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -19,6 +21,26 @@ header{
     flex-direction: row;
     align-items: center;
 }
+
+#apply-button{
+    background-color:rgba(240, 248, 255, 0.501);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+#apply-button:hover{
+    border-radius: 9px;
+    font-size: 15px;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
 .submit{
+    padding: 20px;
     display: block;
 }
+
+.image{
+    margin: auto;
+}
+
+
+

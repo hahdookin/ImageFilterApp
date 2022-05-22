@@ -10,67 +10,51 @@
     </head>
     <body>
         <header>
-            <h1>Welcome to Jack and Chris's Image Filter</h1>
+            <h1>Jack and Chris's Image Filter</h1>
         </header>
         
         <div class="content">
             <div class="top-content">
-                <div style="width:50px; height:50px; border:1px solid black"></div>
                 <fieldset>
                     <legend>Select a Filter:</legend>
 
-                    <div>
                         <input type="radio" id="normal" value="normal" name="filter"
                         checked>
                         <label for="normal">Normal</label>
-                    </div>
 
-                    <div>
                         <input type="radio" id="box-blur" value="box-blur" name="filter">
                         <label for="box-blur">Box Blur</label>
-                    </div>
 
-                    <div>
                         <input type="radio" id="gaussian-blur" value="gaussian-blur" name="filter">
                         <label for="gaussian-blur">Gaussian Blur</label>
-                    </div>
 
-                    <div>
                         <input type="radio" id="pixelated" value="pixelated" name="filter">
                         <label for="pixelated">Pixelated</label>
-                    </div>
-
-                    <div>
+ 
                         <input type="radio" id="greyscale" value="greyscale" name="filter">
                         <label for="greyscale">Greyscale</label>
-                    </div>
-
-                    <div>
+ 
                         <input type="radio" id="emboss" value="emboss" name="filter">
                         <label for="emboss">Emboss</label>
-                    </div>
-
-                    <div>
+ 
                         <input type="radio" id="sharpen" value="sharpen" name="filter">
                         <label for="sharpen">Sharpen</label>
-                    </div>
-
-                    <div>
+ 
                         <input type="radio" id="ridge" value="ridge" name="filter">
                         <label for="ridge">Ridge</label>
-                    </div>
 
-                    <div>
-                        <button id="apply-button">Apply</button>
-                    </div>
                 </fieldset>
             </div>
+
+            <button type="button" id="apply-button">Apply</button>
 
             <div class="submit">
                 <input type="file" id="uploaded-file">
             </div>     
-                    
+            
         </div>
+
+        <div class="image" style="width:50px; height:50px; border:1px solid black"></div>
 
     </body>
 </html>
