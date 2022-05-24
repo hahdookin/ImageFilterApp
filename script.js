@@ -1,22 +1,80 @@
-import PPM from './src/PPM.js';
-import Kernel from './src/Kernel.js';
+import { vsSource } from './src/shaders/vertex.js';
+import { fsSource } from './src/shaders/fragment.js';
 
+// Document elements that are needed
 const fileUploadBtn = document.getElementById('uploaded-file');
 const applyFilterBtn = document.getElementById('apply-button');
+const canvas = document.querySelector('canvas');
 
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
-document.querySelector('body').appendChild(canvas);
-
+// Info pertaining to a loaded image
+let width, height;
 let originalImage;
 let workingImage;
 
-fileUploadBtn.addEventListener('input', async function(e) {
-    const ppm = await PPM.fromFile(this.files[0]);
-    originalImage = ppm.pixels;
-    workingImage = ppm.pixels.clone();
+const scene = new THREE.Scene();
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+renderer.setSize(0, 0);
 
-    workingImage.draw(canvas);
+// Helper function to load image as a Promise
+function loadTexture(url) {
+    return new Promise(resolve => {
+        new THREE.TextureLoader().load(url, resolve)
+    })
+}
+
+// Creates a plane mesh with a texture from an image
+function createTexturedPlane(texture, w, h) {
+    const resolution = new THREE.Vector2(w, h);
+    const geometry = new THREE.PlaneBufferGeometry(2, 2);
+    const material = new THREE.ShaderMaterial({
+        uniforms: {
+            texture1: { type: 't', value: texture },
+            resolution: { type: 'vec2', value: resolution }
+        },
+        vertexShader: vsSource,
+        fragmentShader: fsSource
+    })
+
+    return new THREE.Mesh(geometry, material);
+}
+
+async function onImageLoad() {
+    // Manipulate the renderer
+    width = originalImage.width;
+    height = originalImage.height;
+    renderer.setSize(width, height);
+
+    // Clear the scene of previous planes
+    scene.clear();
+
+    // Add the image to the plane and draw it
+    const texture = await loadTexture(originalImage.src);
+    const plane = await createTexturedPlane(texture, width, height);
+    scene.add( plane );
+    renderer.render( scene, camera );
+}
+
+fileUploadBtn.addEventListener('input', async function(e) {
+    // Store an original copy and a working copy
+    // of the image.
+    originalImage = new Image();
+    workingImage = new Image();
+
+    // Read the file and set the images' sources.
+    const fr = new FileReader();
+
+    // Callback for when FileReader has read the files.
+    fr.onload = () => {
+        originalImage.src = fr.result;
+        workingImage.src = fr.result;
+    }
+
+    // Callback for when the Images have completely loaded.
+    // This is where things happen.
+    originalImage.onload = onImageLoad;
+
+    fr.readAsDataURL(this.files[0]);
 });
 
 applyFilterBtn.addEventListener('click', function(e) {
@@ -26,30 +84,21 @@ applyFilterBtn.addEventListener('click', function(e) {
 
         switch (el.value) {
             case "normal":
-                workingImage = originalImage.clone();
                 break;
             case "box-blur":
-                workingImage.convolve(Kernel.BoxBlur());
                 break;
             case "gaussian-blur":
-                workingImage.convolve(Kernel.GaussianBlur());
                 break;
             case "pixelated":
                 break;
             case "greyscale":
-                workingImage.greyscale();
                 break;
             case "emboss":
-                workingImage.convolve(Kernel.Emboss());
                 break;
             case "sharpen":
-                workingImage.convolve(Kernel.Sharpen());
                 break;
             case "ridge":
-                workingImage.convolve(Kernel.Ridge());
                 break;
         }
-
-        workingImage.draw(canvas);
     });
 });
