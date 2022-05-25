@@ -103,6 +103,32 @@ export const fsSource = `
         return vec3((c.r + c.g + c.b) / 3.0);
     }
 
+    vec3 monochrome(vec3 c) {
+        vec3 texColor = texture2D(texture1, vUv).rgb;
+        if (greyscale(texColor).r > MONOCHROME_THRESHOLD)
+            return WHITE;
+        else
+            return BLACK;
+    }
+
+    vec3 pixelate(float pixel_size) {
+        float pixelWidth = floor(resolution.x * pixel_size);
+        float pixelHeight = floor(resolution.x * pixel_size);
+
+        vec2 fragCoord = vec2(
+            floor(vUv.x * resolution.x),
+            floor(vUv.y * resolution.y)
+        );
+
+        vec2 boundingBox = vec2(
+            floor(fragCoord.x / pixelWidth) * pixelWidth,
+            floor(fragCoord.y / pixelHeight) * pixelHeight
+        );
+
+        vec2 uv = boundingBox / resolution.xy;
+        return texture2D(texture1, uv).rgb;
+    }
+
     void main()
     {
         vec3 col;
@@ -118,7 +144,7 @@ export const fsSource = `
                 col = convolution(gaussian_blur, texture1, vUv);
                 break;
             case FILTER_PIXELATE:
-                col = vec3(1.0, 0.5, 0.2);
+                col = pixelate(0.025);
                 break;
             case FILTER_GREYSCALE:
                 col = greyscale(texture2D(texture1, vUv).rgb);
@@ -133,11 +159,7 @@ export const fsSource = `
                 col = convolution(ridge, texture1, vUv);
                 break;
             case FILTER_MONOCHROME:
-                vec3 texColor = texture2D(texture1, vUv).rgb;
-                if (greyscale(texColor).r > MONOCHROME_THRESHOLD)
-                    col = WHITE;
-                else
-                    col = BLACK;
+                col = monochrome(texture2D(texture1, vUv).rgb);
                 break;
         }
 
